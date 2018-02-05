@@ -1,5 +1,7 @@
 package model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -8,18 +10,28 @@ import javafx.beans.property.StringProperty;
  */
 public class NoteModel {
 
-  private final StringProperty name;
-  private final StringProperty date;
-  private final StringProperty noteText;
+  private final IntegerProperty id;
+  private final StringProperty  name;
+  private final StringProperty  date;
+  private final StringProperty  noteText;
 
   public NoteModel() {
     this(null, null, null);
   }
 
   public NoteModel(String name, String date, String noteText) {
+    this.id = new SimpleIntegerProperty();
     this.name = new SimpleStringProperty(name);
     this.date = new SimpleStringProperty(date);
     this.noteText = new SimpleStringProperty(noteText);
+  }
+
+  public int getId() {
+    return id.get();
+  }
+
+  public IntegerProperty idProperty() {
+    return id;
   }
 
   public String getName() {
@@ -46,6 +58,10 @@ public class NoteModel {
     return noteText;
   }
 
+  public void setId(int id) {
+    this.id.set(id);
+  }
+
   public void setName(String name) {
     this.name.set(name);
   }
@@ -56,5 +72,15 @@ public class NoteModel {
 
   public void setNoteText(String noteText) {
     this.noteText.set(noteText);
+  }
+
+  @Override
+  public String toString() {
+    return "NoteModel{" +
+           "noteText=" + noteText +
+           ", date=" + date +
+           ", name=" + name +
+           ", id=" + id +
+           '}';
   }
 }
