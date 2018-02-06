@@ -12,17 +12,19 @@ public class NoteModel {
 
   private final IntegerProperty id;
   private final StringProperty  name;
-  private final StringProperty  date;
+  private final StringProperty  creationDate;
+  private final StringProperty  lastChangeDate;
   private final StringProperty  noteText;
 
   public NoteModel() {
     this(null, null, null);
   }
 
-  public NoteModel(String name, String date, String noteText) {
+  public NoteModel(String name, String creationDate, String noteText) {
     this.id = new SimpleIntegerProperty();
     this.name = new SimpleStringProperty(name);
-    this.date = new SimpleStringProperty(date);
+    this.creationDate = new SimpleStringProperty(creationDate);
+    this.lastChangeDate = new SimpleStringProperty(creationDate);
     this.noteText = new SimpleStringProperty(noteText);
   }
 
@@ -42,12 +44,20 @@ public class NoteModel {
     return name;
   }
 
-  public String getDate() {
-    return date.get();
+  public String getCreationDate() {
+    return creationDate.get();
   }
 
-  public StringProperty dateProperty() {
-    return date;
+  public StringProperty creationDateProperty() {
+    return creationDate;
+  }
+
+  public String getLastChangeDate() {
+    return lastChangeDate.get();
+  }
+
+  public StringProperty lastChangeDateProperty() {
+    return lastChangeDate;
   }
 
   public String getNoteText() {
@@ -66,8 +76,12 @@ public class NoteModel {
     this.name.set(name);
   }
 
-  public void setDate(String date) {
-    this.date.set(date);
+  public void setCreationDate(String creationDate) {
+    this.creationDate.set(creationDate);
+  }
+
+  public void setLastChangeDate(String lastChangeDate) {
+    this.lastChangeDate.set(lastChangeDate);
   }
 
   public void setNoteText(String noteText) {
@@ -77,10 +91,11 @@ public class NoteModel {
   @Override
   public String toString() {
     return "NoteModel{" +
-           "noteText=" + noteText +
-           ", date=" + date +
+           "id=" + id +
            ", name=" + name +
-           ", id=" + id +
+           ", creationDate=" + creationDate +
+           ", lastChangeDate=" + lastChangeDate +
+           ", noteText=" + noteText +
            '}';
   }
 }

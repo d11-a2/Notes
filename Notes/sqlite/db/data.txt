@@ -1,0 +1,19 @@
+.open db/notes.db;
+
+CREATE TABLE note (
+	id       INTEGER PRIMARY KEY AUTOINCREMENT ,
+	name     TEXT NOT NULL,
+	date     TEXT NOT NULL,
+	noteText TEXT NOT NULL
+);
+
+INSERT INTO note (name, date, noteText)
+VALUES ('1-note', '2018-02-12', 'first note');
+
+INSERT INTO note (name, date, noteText)
+VALUES ('2-note', '2018-02-11', 'second note');
+
+http://code.makery.ch/library/javafx-8-tutorial/ru/part2/
+
+http://2sql.ru/basic/sql-having/
+http://sqlfiddle.com/#!9/f6d942/1

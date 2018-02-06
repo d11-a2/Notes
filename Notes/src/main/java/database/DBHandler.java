@@ -33,9 +33,9 @@ public class DBHandler { // Константа, в которой хранитс
 
     try (Statement statement = this.connection.createStatement()) {
       List<NoteModel> notes = new ArrayList<>();
-      ResultSet resultSet = statement.executeQuery("SELECT id, name, date, noteText FROM note");
+      ResultSet resultSet = statement.executeQuery("SELECT id, name, creationDate, lastChangeDate, noteText FROM note");
       while (resultSet.next()) {
-        NoteModel model = new NoteModel(resultSet.getString("name"), resultSet.getString("date"), resultSet.getString("noteText"));
+        NoteModel model = new NoteModel(resultSet.getString("name"), resultSet.getString("creationDate"), resultSet.getString("noteText"));
         model.setId(resultSet.getInt("id"));
         notes.add(model);
       }
@@ -48,10 +48,11 @@ public class DBHandler { // Константа, в которой хранитс
   }
 
   public void addNote(NoteModel model) {
-    try (PreparedStatement statement = this.connection.prepareStatement(" INSERT INTO note (name, date, noteText) " + "VALUES(?, ?, ?) ")) {
+    try (PreparedStatement statement = this.connection.prepareStatement(" INSERT INTO note (name, creationDate, lastChangeDate, noteText) VALUES(?, ?, ?, ?) ")) {
       statement.setObject(1, model.getName());
-      statement.setObject(2, model.getDate());
-      statement.setObject(3, model.getNoteText());
+      statement.setObject(2, model.getCreationDate());
+      statement.setObject(3, model.getLastChangeDate());
+      statement.setObject(4, model.getNoteText());
 
       statement.execute();
     }
@@ -61,11 +62,11 @@ public class DBHandler { // Константа, в которой хранитс
   }
 
   public void saveNote(NoteModel model) {
-    try (PreparedStatement statement = this.connection.prepareStatement(" UPDATE note SET name = ? , noteText = ? "
-                                                                        + " WHERE id = ? ")) {
+    try (PreparedStatement statement = this.connection.prepareStatement(" UPDATE note SET name = ? , noteText = ? , lastChangeDate = ? WHERE id = ? ")) {
       statement.setObject(1, model.getName());
       statement.setObject(2, model.getNoteText());
-      statement.setObject(3, model.getId());
+      statement.setObject(3, model.getLastChangeDate());
+      statement.setObject(4, model.getId());
 
       statement.execute();
     }
@@ -85,4 +86,26 @@ public class DBHandler { // Константа, в которой хранитс
     }
   }
 
+  public void initializeDataBase(List<NoteModel> models) {
+    try (Statement statement = connection.createStatement()) {
+      String openAndDropTable = "DROP TABLE IF EXISTS note;";
+      String createTable = "CREATE TABLE note (" +
+                           "id       INTEGER PRIMARY KEY AUTOINCREMENT," +
+                           "name     TEXT NOT NULL," +
+                           "creationDate     TEXT NOT NULL," +
+                           "lastChangeDate     TEXT NOT NULL," +
+                           "noteText TEXT NOT NULL" +
+                           ");";
+
+      statement.executeUpdate(openAndDropTable);
+      statement.executeUpdate(createTable);
+
+      for (NoteModel model : models) {
+        addNote(model);
+      }
+    }
+    catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }
