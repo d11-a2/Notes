@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NoteTableController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NoteOverviewController">
 	<children>
 		<SplitPane id="splitPanel" dividerPositions="0.19230769230769232, 0.8612040133779264" prefHeight="315.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
 			<items>
@@ -14,8 +14,9 @@
 					<children>
 						<TableView id="noteTable" fx:id="noteTable" editable="true" prefHeight="313.0" prefWidth="174.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<columns>
-								<TableColumn id="noteName" fx:id="noteNameColumn" prefWidth="75.0" text="Name" />
-								<TableColumn id="creationDate" fx:id="noteDateColumn" prefWidth="75.0" text="Date" />
+								<TableColumn id="noteName" fx:id="noteNameColumn" prefWidth="100.0" text="Name" />
+								<TableColumn id="creationDate" fx:id="noteCreationDateColumn" prefWidth="100.0" text="Creation Date" />
+								<TableColumn id="lastChangeDate" fx:id="noteLastChangeDateColumn" prefWidth="100.0" text="Last Changes" />
 							</columns>
 							<columnResizePolicy>
 								<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -25,7 +26,7 @@
 				</AnchorPane>
 				<AnchorPane prefHeight="200.0" prefWidth="200.0">
 					<children>
-						<TextArea id="textArea" fx:id="noteText" cache="true" pickOnBounds="true" prefHeight="313.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+						<TextArea id="textArea" fx:id="noteText" cache="true" layoutX="-58.0" layoutY="-14.0" pickOnBounds="true" prefHeight="313.0" prefWidth="394.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<font>
 								<Font size="16.0" />
 							</font>
@@ -36,12 +37,17 @@
 					<children>
 						<VBox prefHeight="313.0" prefWidth="56.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 							<children>
-								<Button id="saveButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#save" prefHeight="40.0" prefWidth="80.0" text="Save" textAlignment="CENTER">
+								<Button id="addButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#add" prefHeight="40.0" prefWidth="80.0" text="Add" textAlignment="CENTER">
 									<font>
 										<Font size="15.0" />
 									</font>
 								</Button>
-								<Button id="addButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#add" prefHeight="40.0" prefWidth="80.0" text="Add" textAlignment="CENTER">
+                        <Button mnemonicParsing="false" onAction="#edit" prefHeight="39.0" prefWidth="86.0" text="Edit">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+								<Button id="saveButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#save" prefHeight="40.0" prefWidth="80.0" text="Save" textAlignment="CENTER">
 									<font>
 										<Font size="15.0" />
 									</font>

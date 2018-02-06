@@ -1,5 +1,7 @@
 package model;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -8,18 +10,30 @@ import javafx.beans.property.StringProperty;
  */
 public class NoteModel {
 
-  private final StringProperty name;
-  private final StringProperty date;
-  private final StringProperty noteText;
+  private final IntegerProperty id;
+  private final StringProperty  name;
+  private final StringProperty  creationDate;
+  private final StringProperty  lastChangeDate;
+  private final StringProperty  noteText;
 
   public NoteModel() {
     this(null, null, null);
   }
 
-  public NoteModel(String name, String date, String noteText) {
+  public NoteModel(String name, String creationDate, String noteText) {
+    this.id = new SimpleIntegerProperty();
     this.name = new SimpleStringProperty(name);
-    this.date = new SimpleStringProperty(date);
+    this.creationDate = new SimpleStringProperty(creationDate);
+    this.lastChangeDate = new SimpleStringProperty(creationDate);
     this.noteText = new SimpleStringProperty(noteText);
+  }
+
+  public int getId() {
+    return id.get();
+  }
+
+  public IntegerProperty idProperty() {
+    return id;
   }
 
   public String getName() {
@@ -30,12 +44,20 @@ public class NoteModel {
     return name;
   }
 
-  public String getDate() {
-    return date.get();
+  public String getCreationDate() {
+    return creationDate.get();
   }
 
-  public StringProperty dateProperty() {
-    return date;
+  public StringProperty creationDateProperty() {
+    return creationDate;
+  }
+
+  public String getLastChangeDate() {
+    return lastChangeDate.get();
+  }
+
+  public StringProperty lastChangeDateProperty() {
+    return lastChangeDate;
   }
 
   public String getNoteText() {
@@ -46,15 +68,34 @@ public class NoteModel {
     return noteText;
   }
 
+  public void setId(int id) {
+    this.id.set(id);
+  }
+
   public void setName(String name) {
     this.name.set(name);
   }
 
-  public void setDate(String date) {
-    this.date.set(date);
+  public void setCreationDate(String creationDate) {
+    this.creationDate.set(creationDate);
+  }
+
+  public void setLastChangeDate(String lastChangeDate) {
+    this.lastChangeDate.set(lastChangeDate);
   }
 
   public void setNoteText(String noteText) {
     this.noteText.set(noteText);
+  }
+
+  @Override
+  public String toString() {
+    return "NoteModel{" +
+           "id=" + id +
+           ", name=" + name +
+           ", creationDate=" + creationDate +
+           ", lastChangeDate=" + lastChangeDate +
+           ", noteText=" + noteText +
+           '}';
   }
 }

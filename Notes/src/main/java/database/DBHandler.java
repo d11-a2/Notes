@@ -13,10 +13,8 @@ import model.NoteModel;
  * Created by nikita.shubarev@masterdata.ru on 02.02.2018.
  */
 public class DBHandler { // Константа, в которой хранится адрес подключения
-  private static final String DATABASE = "jdbc:sqlite:" + System.getProperty("user.dir") + "\\sqlite\\db\\notes.db";
+  private static final String DATABASE = String.format("jdbc:sqlite: %1$s %2$s sqlite %2$s db %2$s notes.db", System.getProperty("user.dir"), System.getProperty("file.separator")).replaceAll(" ", "");
 
-  // Используем шаблон одиночка, чтобы не плодить множество
-  // экземпляров класса DbHandler
   private static DBHandler instance = null;
 
   public static synchronized DBHandler getInstance() throws SQLException {
@@ -24,52 +22,38 @@ public class DBHandler { // Константа, в которой хранитс
     return instance;
   }
 
-  // Объект, в котором будет храниться соединение с БД
   private Connection connection;
 
   private DBHandler() throws SQLException {
-    // Регистрируем драйвер, с которым будем работать
-    // в нашем случае Sqlite
     DriverManager.registerDriver(new JDBC());
-    // Выполняем подключение к базе данных
-    System.out.println(DATABASE);
     this.connection = DriverManager.getConnection(DATABASE);
-    connection.getCatalog();
-    System.out.println(connection.getSchema());
   }
 
   public List<NoteModel> getAllNotes() {
 
-    // Statement используется для того, чтобы выполнить sql-запрос
     try (Statement statement = this.connection.createStatement()) {
-      // В данный список будем загружать наши продукты, полученные из БД
       List<NoteModel> notes = new ArrayList<>();
-      // В resultSet будет храниться результат нашего запроса,
-      // который выполняется командой statement.executeQuery()
-      ResultSet resultSet = statement.executeQuery("SELECT name , date, noteText FROM note");
-      // Проходимся по нашему resultSet и заносим данные в products
+      ResultSet resultSet = statement.executeQuery("SELECT id, name, creationDate, lastChangeDate, noteText FROM note");
       while (resultSet.next()) {
-        notes.add(new NoteModel(resultSet.getString("name"), resultSet.getString("date"), resultSet.getString("noteText")));
+        NoteModel model = new NoteModel(resultSet.getString("name"), resultSet.getString("creationDate"), resultSet.getString("noteText"));
+        model.setId(resultSet.getInt("id"));
+        notes.add(model);
       }
-      // Возвращаем наш список
       return notes;
-
     }
     catch (SQLException e) {
       e.printStackTrace();
-      // Если произошла ошибка - возвращаем пустую коллекцию
       return Collections.emptyList();
     }
   }
-/*
-  // Добавление продукта в БД
-  public void addProduct(Product product) {
-    // Создадим подготовленное выражение, чтобы избежать SQL-инъекций
-    try (PreparedStatement statement = this.connection.prepareStatement("INSERT INTO Products(`good`, `price`, `category_name`) " + "VALUES(?, ?, ?)")) {
-      statement.setObject(1, product.good);
-      statement.setObject(2, product.price);
-      statement.setObject(3, product.category_name);
-      // Выполняем запрос
+
+  public void addNote(NoteModel model) {
+    try (PreparedStatement statement = this.connection.prepareStatement(" INSERT INTO note (name, creationDate, lastChangeDate, noteText) VALUES(?, ?, ?, ?) ")) {
+      statement.setObject(1, model.getName());
+      statement.setObject(2, model.getCreationDate());
+      statement.setObject(3, model.getLastChangeDate());
+      statement.setObject(4, model.getNoteText());
+
       statement.execute();
     }
     catch (SQLException e) {
@@ -77,11 +61,24 @@ public class DBHandler { // Константа, в которой хранитс
     }
   }
 
-  // Удаление продукта по id
-  public void deleteProduct(int id) {
-    try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM Products WHERE id = ?")) {
+  public void saveNote(NoteModel model) {
+    try (PreparedStatement statement = this.connection.prepareStatement(" UPDATE note SET name = ? , noteText = ? , lastChangeDate = ? WHERE id = ? ")) {
+      statement.setObject(1, model.getName());
+      statement.setObject(2, model.getNoteText());
+      statement.setObject(3, model.getLastChangeDate());
+      statement.setObject(4, model.getId());
+
+      statement.execute();
+    }
+    catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void deleteNote(int id) {
+    try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM note WHERE id = ?")) {
       statement.setObject(1, id);
-      // Выполняем запрос
+
       statement.execute();
     }
     catch (SQLException e) {
@@ -89,5 +86,26 @@ public class DBHandler { // Константа, в которой хранитс
     }
   }
 
-  */
+  public void initializeDataBase(List<NoteModel> models) {
+    try (Statement statement = connection.createStatement()) {
+      String openAndDropTable = "DROP TABLE IF EXISTS note;";
+      String createTable = "CREATE TABLE note (" +
+                           "id       INTEGER PRIMARY KEY AUTOINCREMENT," +
+                           "name     TEXT NOT NULL," +
+                           "creationDate     TEXT NOT NULL," +
+                           "lastChangeDate     TEXT NOT NULL," +
+                           "noteText TEXT NOT NULL" +
+                           ");";
+
+      statement.executeUpdate(openAndDropTable);
+      statement.executeUpdate(createTable);
+
+      for (NoteModel model : models) {
+        addNote(model);
+      }
+    }
+    catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }
